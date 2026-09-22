@@ -1,5 +1,5 @@
 import XCTest
-import CourseData
+import CourseDataSwift
 
 // MARK: - Test Fixtures
 

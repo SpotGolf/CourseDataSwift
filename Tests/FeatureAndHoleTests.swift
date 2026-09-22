@@ -1,5 +1,5 @@
 import XCTest
-import CourseData
+import CourseDataSwift
 
 final class FeatureTests: XCTestCase {
     func testPolygonFeatureCodableRoundTrip() throws {

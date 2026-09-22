@@ -1,5 +1,5 @@
 import XCTest
-import CourseData
+import CourseDataSwift
 
 final class CourseTests: XCTestCase {
     func testCodableRoundTrip() throws {

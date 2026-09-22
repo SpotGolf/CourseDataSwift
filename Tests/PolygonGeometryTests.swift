@@ -1,5 +1,5 @@
 import XCTest
-import CourseData
+import CourseDataSwift
 
 final class PolygonGeometryTests: XCTestCase {
     func testCentroidOfSquare() {

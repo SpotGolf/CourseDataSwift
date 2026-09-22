@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-@testable import CourseData
+@testable import CourseDataSwift
 
 @Suite("GZip Compression Tests")
 struct GZipTests {
