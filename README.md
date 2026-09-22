@@ -1,14 +1,14 @@
-# CourseData
+# CourseDataSwift
 
 A Swift library for golf course data models, paired with a community-sourced repository of golf course JSON files built using the [CourseBuilder](https://github.com/SpotGolf/CourseBuilder) macOS app.
 
 ## Swift Package
 
-Add CourseData as a dependency in your `Package.swift`:
+Add CourseDataSwift as a dependency in your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/SpotGolf/CourseData.git", from: "1.0.0")
+    .package(url: "https://github.com/SpotGolf/CourseDataSwift.git", from: "1.0.0")
 ]
 ```
 

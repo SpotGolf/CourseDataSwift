@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repository contains **A Swift library** (`CourseData`) providing data models for golf courses — `Course`, `Hole`, `Feature`, `Coordinate`, and related types.
+This repository contains **A Swift library** (`CourseDataSwift`) providing data models for golf courses — `Course`, `Hole`, `Feature`, `Coordinate`, and related types.
 
 ## Build & Test
 
