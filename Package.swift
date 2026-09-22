@@ -3,23 +3,23 @@
 import PackageDescription
 
 let package = Package(
-    name: "CourseData",
+    name: "CourseDataSwift",
     platforms: [
         .macOS(.v14),
         .iOS(.v17),
         .watchOS(.v10)
     ],
     products: [
-        .library(name: "CourseData", targets: ["CourseData"])
+        .library(name: "CourseDataSwift", targets: ["CourseDataSwift"])
     ],
     targets: [
         .target(
-            name: "CourseData",
+            name: "CourseDataSwift",
             path: "Sources"
         ),
         .testTarget(
-            name: "CourseDataTests",
-            dependencies: ["CourseData"],
+            name: "CourseDataSwiftTests",
+            dependencies: ["CourseDataSwift"],
             path: "Tests"
         )
     ]
