@@ -29,17 +29,34 @@ public struct SubCourse: Identifiable, Codable, Equatable, Hashable {
     public var name: String
     public var holes: [Hole]
     public var tees: [String: SubCourseTee]
+    public var comboTees: [String: SubCourseTee]
 
     public init(
         id: UUID = UUID(),
         name: String,
         holes: [Hole] = [],
-        tees: [String: SubCourseTee] = [:]
+        tees: [String: SubCourseTee] = [:],
+        comboTees: [String: SubCourseTee] = [:]
     ) {
         self.id = id
         self.name = name
         self.holes = holes
         self.tees = tees
+        self.comboTees = comboTees
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, holes, tees, comboTees
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        holes = try container.decode([Hole].self, forKey: .holes)
+        tees = try container.decode([String: SubCourseTee].self, forKey: .tees)
+        // Older course JSON does not have comboTees
+        comboTees = try container.decodeIfPresent([String: SubCourseTee].self, forKey: .comboTees) ?? [:]
     }
 }
 
@@ -68,6 +85,21 @@ public struct TeeDefinition: Codable, Equatable, Hashable, Identifiable {
         case "green": "#008000"
         default: "#808080"
         }
+    }
+}
+
+public struct ComboTeeDefinition: Codable, Equatable, Hashable, Identifiable {
+    public var id: String { name }
+    public var name: String
+    public var tees: [String]
+
+    public init(name: String, tees: [String]) {
+        self.name = name
+        self.tees = tees
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case name, tees
     }
 }
 
@@ -107,6 +139,7 @@ public struct Course: Identifiable, Codable, Equatable, Hashable {
     public var golfCourseAPIIds: [String]
     public var location: CourseLocation
     public var tees: [TeeDefinition]
+    public var comboTees: [ComboTeeDefinition]
     public var features: [Feature]
     public var subCourses: [SubCourse]
 
@@ -121,6 +154,7 @@ public struct Course: Identifiable, Codable, Equatable, Hashable {
         golfCourseAPIIds: [String] = [],
         location: CourseLocation,
         tees: [TeeDefinition] = [],
+        comboTees: [ComboTeeDefinition] = [],
         features: [Feature] = [],
         subCourses: [SubCourse] = []
     ) {
@@ -130,8 +164,27 @@ public struct Course: Identifiable, Codable, Equatable, Hashable {
         self.golfCourseAPIIds = golfCourseAPIIds
         self.location = location
         self.tees = tees
+        self.comboTees = comboTees
         self.features = features
         self.subCourses = subCourses
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, clubName, golfCourseAPIIds, location, tees, comboTees, features, subCourses
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        clubName = try container.decode(String.self, forKey: .clubName)
+        golfCourseAPIIds = try container.decode([String].self, forKey: .golfCourseAPIIds)
+        location = try container.decode(CourseLocation.self, forKey: .location)
+        tees = try container.decode([TeeDefinition].self, forKey: .tees)
+        // Older course JSON does not have comboTees
+        comboTees = try container.decodeIfPresent([ComboTeeDefinition].self, forKey: .comboTees) ?? []
+        features = try container.decode([Feature].self, forKey: .features)
+        subCourses = try container.decode([SubCourse].self, forKey: .subCourses)
     }
 
     /// Finds a feature by its unique integer identifier.

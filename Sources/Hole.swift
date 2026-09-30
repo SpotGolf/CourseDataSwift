@@ -9,6 +9,7 @@ public struct Hole: Identifiable, Codable, Equatable, Hashable {
     public var yardages: [String: Int]
     public var features: [Int]
     public var tees: [String: Int]
+    public var comboTees: [String: String]
     public var centerline: [Coordinate]
 
     public init(
@@ -19,6 +20,7 @@ public struct Hole: Identifiable, Codable, Equatable, Hashable {
         yardages: [String: Int] = [:],
         features: [Int] = [],
         tees: [String: Int] = [:],
+        comboTees: [String: String] = [:],
         centerline: [Coordinate] = []
     ) {
         self.number = number
@@ -28,7 +30,26 @@ public struct Hole: Identifiable, Codable, Equatable, Hashable {
         self.yardages = yardages
         self.features = features
         self.tees = tees
+        self.comboTees = comboTees
         self.centerline = centerline
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case number, par, maleHandicap, femaleHandicap, yardages, features, tees, comboTees, centerline
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        number = try container.decode(Int.self, forKey: .number)
+        par = try container.decode(Int.self, forKey: .par)
+        maleHandicap = try container.decode(Int.self, forKey: .maleHandicap)
+        femaleHandicap = try container.decode(Int.self, forKey: .femaleHandicap)
+        yardages = try container.decode([String: Int].self, forKey: .yardages)
+        features = try container.decode([Int].self, forKey: .features)
+        tees = try container.decode([String: Int].self, forKey: .tees)
+        // Older course JSON does not have comboTees
+        comboTees = try container.decodeIfPresent([String: String].self, forKey: .comboTees) ?? [:]
+        centerline = try container.decode([Coordinate].self, forKey: .centerline)
     }
 
     public func renumbered(to newNumber: Int) -> Hole {
@@ -40,6 +61,7 @@ public struct Hole: Identifiable, Codable, Equatable, Hashable {
             yardages: yardages,
             features: features,
             tees: tees,
+            comboTees: comboTees,
             centerline: centerline
         )
     }

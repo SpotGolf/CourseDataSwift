@@ -87,6 +87,7 @@ final class HoleTests: XCTestCase {
             femaleHandicap: 5,
             yardages: ["Blue": 545],
             features: [10, 11],
+            comboTees: ["Blue/White": "Blue"],
             centerline: [Coordinate(latitude: 39.0, longitude: -105.0)]
         )
         let renumbered = hole.renumbered(to: 1)
@@ -96,6 +97,7 @@ final class HoleTests: XCTestCase {
         XCTAssertEqual(renumbered.femaleHandicap, 5)
         XCTAssertEqual(renumbered.yardages["Blue"], 545)
         XCTAssertEqual(renumbered.features, [10, 11])
+        XCTAssertEqual(renumbered.comboTees, ["Blue/White": "Blue"])
         XCTAssertEqual(renumbered.centerline.count, 1)
         XCTAssertEqual(renumbered.id, 1)
     }
