@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TeeInformation: Codable, Equatable, Hashable {
+public struct TeeInformation: Codable, Equatable, Hashable, Sendable {
     public var rating: Double?
     public var slope: Int?
     public var totalYards: Int?
@@ -14,7 +14,7 @@ public struct TeeInformation: Codable, Equatable, Hashable {
     }
 }
 
-public struct SubCourseTee: Codable, Equatable, Hashable {
+public struct SubCourseTee: Codable, Equatable, Hashable, Sendable {
     public var male: TeeInformation?
     public var female: TeeInformation?
 
@@ -24,7 +24,7 @@ public struct SubCourseTee: Codable, Equatable, Hashable {
     }
 }
 
-public struct SubCourse: Identifiable, Codable, Equatable, Hashable {
+public struct SubCourse: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let id: UUID
     public var name: String
     public var holes: [Hole]
@@ -60,7 +60,7 @@ public struct SubCourse: Identifiable, Codable, Equatable, Hashable {
     }
 }
 
-public struct TeeDefinition: Codable, Equatable, Hashable, Identifiable {
+public struct TeeDefinition: Codable, Equatable, Hashable, Identifiable, Sendable {
     public var id: String { name }
     public var name: String
     public var color: String
@@ -88,7 +88,7 @@ public struct TeeDefinition: Codable, Equatable, Hashable, Identifiable {
     }
 }
 
-public struct ComboTeeDefinition: Codable, Equatable, Hashable, Identifiable {
+public struct ComboTeeDefinition: Codable, Equatable, Hashable, Identifiable, Sendable {
     public var id: String { name }
     public var name: String
     public var tees: [String]
@@ -103,7 +103,7 @@ public struct ComboTeeDefinition: Codable, Equatable, Hashable, Identifiable {
     }
 }
 
-public struct CourseLocation: Codable, Equatable, Hashable {
+public struct CourseLocation: Codable, Equatable, Hashable, Sendable {
     public var address: String
     public var city: String
     public var state: String
@@ -132,7 +132,7 @@ public struct CourseLocation: Codable, Equatable, Hashable {
     }
 }
 
-public struct Course: Identifiable, Codable, Equatable, Hashable {
+public struct Course: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let id: UUID
     public var name: String
     public var clubName: String

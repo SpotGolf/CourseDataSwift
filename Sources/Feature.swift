@@ -1,6 +1,6 @@
 import Foundation
 
-public enum FeatureType: String, Codable, CaseIterable, Hashable {
+public enum FeatureType: String, Codable, CaseIterable, Hashable, Sendable {
     case fairway
     case green
     case tee
@@ -9,7 +9,7 @@ public enum FeatureType: String, Codable, CaseIterable, Hashable {
     case rough
 }
 
-public struct Feature: Identifiable, Codable, Equatable, Hashable {
+public struct Feature: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let id: Int
     public let type: FeatureType
     public var polygon: [Coordinate]

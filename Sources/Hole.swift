@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Hole: Identifiable, Codable, Equatable, Hashable {
+public struct Hole: Identifiable, Codable, Equatable, Hashable, Sendable {
     public var id: Int { number }
     public let number: Int
     public var par: Int

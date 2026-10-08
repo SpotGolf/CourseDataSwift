@@ -1,7 +1,7 @@
 import Foundation
 import zlib
 
-public enum GZipError: Error {
+public enum GZipError: Error, Sendable {
     case compressionFailed(Int32)
     case decompressionFailed(Int32)
 }

@@ -1,7 +1,7 @@
 import Foundation
 import CoreLocation
 
-public struct Coordinate: Equatable, Hashable {
+public struct Coordinate: Equatable, Hashable, Sendable {
     public var latitude: Double
     public var longitude: Double
 
