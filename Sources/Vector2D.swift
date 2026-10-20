@@ -6,7 +6,7 @@ import Foundation
 /// `Vector2D` is not a geographic coordinate — it represents a direction in flat
 /// latitude/longitude space. This is suitable for the small distances involved
 /// in golf course geometry.
-public struct Vector2D: Equatable, Hashable, Sendable {
+public struct Vector2D: Hashable, Sendable {
     /// The latitude component of the direction vector.
     public var dx: Double
 

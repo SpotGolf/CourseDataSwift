@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Hole: Identifiable, Codable, Equatable, Hashable, Sendable {
+public struct Hole: Identifiable, Codable, Hashable, Sendable {
     public var id: Int { number }
     public let number: Int
     public var par: Int
@@ -10,7 +10,7 @@ public struct Hole: Identifiable, Codable, Equatable, Hashable, Sendable {
     public var features: [Int]
     public var tees: [String: Int]
     public var comboTees: [String: String]
-    public var centerline: [Coordinate]
+    public var centerline: CoordinatePath
 
     public init(
         number: Int,
@@ -21,7 +21,7 @@ public struct Hole: Identifiable, Codable, Equatable, Hashable, Sendable {
         features: [Int] = [],
         tees: [String: Int] = [:],
         comboTees: [String: String] = [:],
-        centerline: [Coordinate] = []
+        centerline: CoordinatePath = []
     ) {
         self.number = number
         self.par = par
@@ -32,24 +32,6 @@ public struct Hole: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.tees = tees
         self.comboTees = comboTees
         self.centerline = centerline
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case number, par, maleHandicap, femaleHandicap, yardages, features, tees, comboTees, centerline
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        number = try container.decode(Int.self, forKey: .number)
-        par = try container.decode(Int.self, forKey: .par)
-        maleHandicap = try container.decode(Int.self, forKey: .maleHandicap)
-        femaleHandicap = try container.decode(Int.self, forKey: .femaleHandicap)
-        yardages = try container.decode([String: Int].self, forKey: .yardages)
-        features = try container.decode([Int].self, forKey: .features)
-        tees = try container.decode([String: Int].self, forKey: .tees)
-        // Older course JSON does not have comboTees
-        comboTees = try container.decodeIfPresent([String: String].self, forKey: .comboTees) ?? [:]
-        centerline = try container.decode([Coordinate].self, forKey: .centerline)
     }
 
     public func renumbered(to newNumber: Int) -> Hole {
@@ -109,8 +91,8 @@ public struct Hole: Identifiable, Codable, Equatable, Hashable, Sendable {
             }
         }
 
-        let dx = centerline[bestIndex + 1].latitude - centerline[bestIndex].latitude
-        let dy = centerline[bestIndex + 1].longitude - centerline[bestIndex].longitude
+        let dx = centerline[bestIndex + 1].lat - centerline[bestIndex].lat
+        let dy = centerline[bestIndex + 1].lon - centerline[bestIndex].lon
         return Vector2D(dx: dx, dy: dy).normalized()
     }
 

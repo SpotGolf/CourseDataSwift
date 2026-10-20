@@ -9,12 +9,12 @@ public enum FeatureType: String, Codable, CaseIterable, Hashable, Sendable {
     case rough
 }
 
-public struct Feature: Identifiable, Codable, Equatable, Hashable, Sendable {
+public struct Feature: Identifiable, Codable, Hashable, Sendable {
     public let id: Int
     public let type: FeatureType
-    public var polygon: [Coordinate]
+    public var polygon: CoordinatePath
 
-    public init(id: Int, type: FeatureType, polygon: [Coordinate]) {
+    public init(id: Int, type: FeatureType, polygon: CoordinatePath) {
         self.id = id
         self.type = type
         self.polygon = polygon
@@ -27,14 +27,6 @@ public struct Feature: Identifiable, Codable, Equatable, Hashable, Sendable {
     /// mean of the vertices.
     public var center: Coordinate {
         PolygonGeometry.centroid(of: polygon)
-    }
-
-    /// The centroid of this feature's polygon.
-    ///
-    /// Equivalent to ``center``. Provided for readability alongside ``front(vector:)``
-    /// and ``back(vector:)``.
-    public func middle() -> Coordinate {
-        center
     }
 
     /// Returns the polygon vertex closest to the origin of play.
@@ -52,11 +44,11 @@ public struct Feature: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///   the direction of play. Returns `(0, 0)` if the polygon is empty.
     public func front(vector: Vector2D) -> Coordinate {
         guard !polygon.isEmpty else {
-            return Coordinate(latitude: 0, longitude: 0)
+            return Coordinate(lat: 0, lon: 0)
         }
         return polygon.min(by: {
-            ($0.latitude * vector.dx + $0.longitude * vector.dy) <
-            ($1.latitude * vector.dx + $1.longitude * vector.dy)
+            ($0.lat * vector.dx + $0.lon * vector.dy) <
+            ($1.lat * vector.dx + $1.lon * vector.dy)
         })!
     }
 
@@ -75,11 +67,11 @@ public struct Feature: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///   the direction of play. Returns `(0, 0)` if the polygon is empty.
     public func back(vector: Vector2D) -> Coordinate {
         guard !polygon.isEmpty else {
-            return Coordinate(latitude: 0, longitude: 0)
+            return Coordinate(lat: 0, lon: 0)
         }
         return polygon.max(by: {
-            ($0.latitude * vector.dx + $0.longitude * vector.dy) <
-            ($1.latitude * vector.dx + $1.longitude * vector.dy)
+            ($0.lat * vector.dx + $0.lon * vector.dy) <
+            ($1.lat * vector.dx + $1.lon * vector.dy)
         })!
     }
 }

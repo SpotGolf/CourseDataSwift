@@ -4,33 +4,33 @@ import CourseDataSwift
 final class PolygonGeometryTests: XCTestCase {
     func testCentroidOfSquare() {
         let polygon = [
-            Coordinate(latitude: 0, longitude: 0),
-            Coordinate(latitude: 0, longitude: 2),
-            Coordinate(latitude: 2, longitude: 2),
-            Coordinate(latitude: 2, longitude: 0)
+            Coordinate(lat: 0, lon: 0),
+            Coordinate(lat: 0, lon: 2),
+            Coordinate(lat: 2, lon: 2),
+            Coordinate(lat: 2, lon: 0)
         ]
         let centroid = PolygonGeometry.centroid(of: polygon)
-        XCTAssertEqual(centroid.latitude, 1.0, accuracy: 0.001)
-        XCTAssertEqual(centroid.longitude, 1.0, accuracy: 0.001)
+        XCTAssertEqual(centroid.lat, 1.0, accuracy: 0.001)
+        XCTAssertEqual(centroid.lon, 1.0, accuracy: 0.001)
     }
 
     func testCentroidOfTriangle() {
         let polygon = [
-            Coordinate(latitude: 0, longitude: 0),
-            Coordinate(latitude: 0, longitude: 6),
-            Coordinate(latitude: 3, longitude: 3)
+            Coordinate(lat: 0, lon: 0),
+            Coordinate(lat: 0, lon: 6),
+            Coordinate(lat: 3, lon: 3)
         ]
         let centroid = PolygonGeometry.centroid(of: polygon)
-        XCTAssertEqual(centroid.latitude, 1.0, accuracy: 0.001)
-        XCTAssertEqual(centroid.longitude, 3.0, accuracy: 0.001)
+        XCTAssertEqual(centroid.lat, 1.0, accuracy: 0.001)
+        XCTAssertEqual(centroid.lon, 3.0, accuracy: 0.001)
     }
 
     func testAreaOfSquare() {
         let polygon = [
-            Coordinate(latitude: 0, longitude: 0),
-            Coordinate(latitude: 0, longitude: 2),
-            Coordinate(latitude: 2, longitude: 2),
-            Coordinate(latitude: 2, longitude: 0)
+            Coordinate(lat: 0, lon: 0),
+            Coordinate(lat: 0, lon: 2),
+            Coordinate(lat: 2, lon: 2),
+            Coordinate(lat: 2, lon: 0)
         ]
         let area = PolygonGeometry.area(of: polygon)
         XCTAssertEqual(area, 4.0, accuracy: 0.001)
@@ -38,71 +38,71 @@ final class PolygonGeometryTests: XCTestCase {
 
     func testFrontAndBackFromDirection() {
         let polygon = [
-            Coordinate(latitude: 39.786, longitude: -74.956),
-            Coordinate(latitude: 39.786, longitude: -74.954),
-            Coordinate(latitude: 39.788, longitude: -74.954),
-            Coordinate(latitude: 39.788, longitude: -74.956)
+            Coordinate(lat: 39.786, lon: -74.956),
+            Coordinate(lat: 39.786, lon: -74.954),
+            Coordinate(lat: 39.788, lon: -74.954),
+            Coordinate(lat: 39.788, lon: -74.956)
         ]
-        let approachFrom = Coordinate(latitude: 39.780, longitude: -74.955)
+        let approachFrom = Coordinate(lat: 39.780, lon: -74.955)
         let front = PolygonGeometry.nearestPoint(on: polygon, to: approachFrom)
         let back = PolygonGeometry.farthestPoint(on: polygon, to: approachFrom)
 
-        XCTAssertEqual(front.latitude, 39.786, accuracy: 0.001)
-        XCTAssertEqual(back.latitude, 39.788, accuracy: 0.001)
+        XCTAssertEqual(front.lat, 39.786, accuracy: 0.001)
+        XCTAssertEqual(back.lat, 39.788, accuracy: 0.001)
     }
 
     func testCentroidOfEmptyPolygon() {
         let centroid = PolygonGeometry.centroid(of: [])
-        XCTAssertEqual(centroid.latitude, 0)
-        XCTAssertEqual(centroid.longitude, 0)
+        XCTAssertEqual(centroid.lat, 0)
+        XCTAssertEqual(centroid.lon, 0)
     }
 
     func testCentroidOfSinglePoint() {
-        let polygon = [Coordinate(latitude: 39.0, longitude: -105.0)]
+        let polygon = [Coordinate(lat: 39.0, lon: -105.0)]
         let centroid = PolygonGeometry.centroid(of: polygon)
-        XCTAssertEqual(centroid.latitude, 39.0)
-        XCTAssertEqual(centroid.longitude, -105.0)
+        XCTAssertEqual(centroid.lat, 39.0)
+        XCTAssertEqual(centroid.lon, -105.0)
     }
 
     func testCentroidElevationIsMeanOfVertexElevations() throws {
         let polygon = [
-            Coordinate(latitude: 39.0, longitude: -105.0, elevation: 1600),
-            Coordinate(latitude: 39.0, longitude: -104.0, elevation: 1602),
-            Coordinate(latitude: 40.0, longitude: -104.0, elevation: 1604),
-            Coordinate(latitude: 40.0, longitude: -105.0, elevation: 1606),
+            Coordinate(lat: 39.0, lon: -105.0, ele: 1600),
+            Coordinate(lat: 39.0, lon: -104.0, ele: 1602),
+            Coordinate(lat: 40.0, lon: -104.0, ele: 1604),
+            Coordinate(lat: 40.0, lon: -105.0, ele: 1606),
         ]
         let centroid = PolygonGeometry.centroid(of: polygon)
-        XCTAssertEqual(try XCTUnwrap(centroid.elevation), 1603, accuracy: 0.0001)
+        XCTAssertEqual(try XCTUnwrap(centroid.ele), 1603, accuracy: 0.0001)
     }
 
     func testCentroidElevationIsNilWhenAnyVertexLacksElevation() {
         let polygon = [
-            Coordinate(latitude: 39.0, longitude: -105.0, elevation: 1600),
-            Coordinate(latitude: 39.0, longitude: -104.0),
-            Coordinate(latitude: 40.0, longitude: -104.0, elevation: 1604),
+            Coordinate(lat: 39.0, lon: -105.0, ele: 1600),
+            Coordinate(lat: 39.0, lon: -104.0),
+            Coordinate(lat: 40.0, lon: -104.0, ele: 1604),
         ]
-        XCTAssertNil(PolygonGeometry.centroid(of: polygon).elevation)
+        XCTAssertNil(PolygonGeometry.centroid(of: polygon).ele)
     }
 
     func testContainsPointInside() {
         let polygon = [
-            Coordinate(latitude: 0, longitude: 0),
-            Coordinate(latitude: 0, longitude: 4),
-            Coordinate(latitude: 4, longitude: 4),
-            Coordinate(latitude: 4, longitude: 0)
+            Coordinate(lat: 0, lon: 0),
+            Coordinate(lat: 0, lon: 4),
+            Coordinate(lat: 4, lon: 4),
+            Coordinate(lat: 4, lon: 0)
         ]
-        let inside = Coordinate(latitude: 2, longitude: 2)
+        let inside = Coordinate(lat: 2, lon: 2)
         XCTAssertTrue(PolygonGeometry.contains(inside, in: polygon))
     }
 
     func testContainsPointOutside() {
         let polygon = [
-            Coordinate(latitude: 0, longitude: 0),
-            Coordinate(latitude: 0, longitude: 4),
-            Coordinate(latitude: 4, longitude: 4),
-            Coordinate(latitude: 4, longitude: 0)
+            Coordinate(lat: 0, lon: 0),
+            Coordinate(lat: 0, lon: 4),
+            Coordinate(lat: 4, lon: 4),
+            Coordinate(lat: 4, lon: 0)
         ]
-        let outside = Coordinate(latitude: 5, longitude: 5)
+        let outside = Coordinate(lat: 5, lon: 5)
         XCTAssertFalse(PolygonGeometry.contains(outside, in: polygon))
     }
 }

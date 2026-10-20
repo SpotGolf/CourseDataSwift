@@ -7,10 +7,10 @@ final class FeatureTests: XCTestCase {
             id: 1,
             type: .fairway,
             polygon: [
-                Coordinate(latitude: 39.788, longitude: -74.958),
-                Coordinate(latitude: 39.787, longitude: -74.957),
-                Coordinate(latitude: 39.786, longitude: -74.956),
-                Coordinate(latitude: 39.787, longitude: -74.959)
+                Coordinate(lat: 39.788, lon: -74.958),
+                Coordinate(lat: 39.787, lon: -74.957),
+                Coordinate(lat: 39.786, lon: -74.956),
+                Coordinate(lat: 39.787, lon: -74.959)
             ]
         )
         let data = try JSONEncoder().encode(feature)
@@ -27,7 +27,7 @@ final class FeatureTests: XCTestCase {
             let feature = Feature(
                 id: 1,
                 type: type,
-                polygon: [Coordinate(latitude: 0, longitude: 0)]
+                polygon: [Coordinate(lat: 0, lon: 0)]
             )
             let data = try JSONEncoder().encode(feature)
             let decoded = try JSONDecoder().decode(Feature.self, from: data)
@@ -40,20 +40,17 @@ final class FeatureTests: XCTestCase {
             id: 42,
             type: .bunker,
             polygon: [
-                Coordinate(latitude: 39.0, longitude: -105.0),
-                Coordinate(latitude: 39.1, longitude: -105.1)
+                Coordinate(lat: 39.0, lon: -105.0),
+                Coordinate(lat: 39.1, lon: -105.1)
             ]
         )
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         let data = try encoder.encode(feature)
-        let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
-        XCTAssertEqual(json["id"] as? Int, 42)
-        XCTAssertEqual(json["type"] as? String, "bunker")
-        let polygon = json["polygon"] as! [[Double]]
-        XCTAssertEqual(polygon.count, 2)
-        XCTAssertEqual(polygon[0][0], 39.0, accuracy: 0.001)
-        XCTAssertEqual(polygon[0][1], -105.0, accuracy: 0.001)
+        XCTAssertEqual(
+            String(decoding: data, as: UTF8.self),
+            #"{"id":42,"polygon":{"values":[14235000,-38325000,null,36500,-36500,null]},"type":"bunker"}"#
+        )
     }
 }
 
@@ -66,8 +63,8 @@ final class HoleTests: XCTestCase {
             yardages: ["Black": 401, "Gold": 378],
             features: [1, 2, 3],
             centerline: [
-                Coordinate(latitude: 39.788, longitude: -74.958),
-                Coordinate(latitude: 39.786, longitude: -74.956)
+                Coordinate(lat: 39.788, lon: -74.958),
+                Coordinate(lat: 39.786, lon: -74.956)
             ]
         )
         let data = try JSONEncoder().encode(hole)
@@ -88,7 +85,7 @@ final class HoleTests: XCTestCase {
             yardages: ["Blue": 545],
             features: [10, 11],
             comboTees: ["Blue/White": "Blue"],
-            centerline: [Coordinate(latitude: 39.0, longitude: -105.0)]
+            centerline: [Coordinate(lat: 39.0, lon: -105.0)]
         )
         let renumbered = hole.renumbered(to: 1)
         XCTAssertEqual(renumbered.number, 1)

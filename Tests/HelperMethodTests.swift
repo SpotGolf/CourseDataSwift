@@ -3,42 +3,42 @@ import CourseDataSwift
 
 // MARK: - Test Fixtures
 
-private let greenPolygon = [
-    Coordinate(latitude: 39.940, longitude: -105.030),
-    Coordinate(latitude: 39.940, longitude: -105.029),
-    Coordinate(latitude: 39.941, longitude: -105.029),
-    Coordinate(latitude: 39.941, longitude: -105.030),
+private let greenPolygon: CoordinatePath = [
+    Coordinate(lat: 39.940, lon: -105.030),
+    Coordinate(lat: 39.940, lon: -105.029),
+    Coordinate(lat: 39.941, lon: -105.029),
+    Coordinate(lat: 39.941, lon: -105.030),
 ]
 
-private let fairwayPolygon = [
-    Coordinate(latitude: 39.935, longitude: -105.032),
-    Coordinate(latitude: 39.935, longitude: -105.028),
-    Coordinate(latitude: 39.939, longitude: -105.028),
-    Coordinate(latitude: 39.939, longitude: -105.032),
+private let fairwayPolygon: CoordinatePath = [
+    Coordinate(lat: 39.935, lon: -105.032),
+    Coordinate(lat: 39.935, lon: -105.028),
+    Coordinate(lat: 39.939, lon: -105.028),
+    Coordinate(lat: 39.939, lon: -105.032),
 ]
 
-private let bunkerPolygon = [
-    Coordinate(latitude: 39.9395, longitude: -105.031),
-    Coordinate(latitude: 39.9395, longitude: -105.030),
-    Coordinate(latitude: 39.9400, longitude: -105.030),
-    Coordinate(latitude: 39.9400, longitude: -105.031),
+private let bunkerPolygon: CoordinatePath = [
+    Coordinate(lat: 39.9395, lon: -105.031),
+    Coordinate(lat: 39.9395, lon: -105.030),
+    Coordinate(lat: 39.9400, lon: -105.030),
+    Coordinate(lat: 39.9400, lon: -105.031),
 ]
 
 private let features = [
     Feature(id: 1, type: .tee, polygon: [
-        Coordinate(latitude: 39.930, longitude: -105.031),
-        Coordinate(latitude: 39.930, longitude: -105.030),
-        Coordinate(latitude: 39.931, longitude: -105.030),
-        Coordinate(latitude: 39.931, longitude: -105.031),
+        Coordinate(lat: 39.930, lon: -105.031),
+        Coordinate(lat: 39.930, lon: -105.030),
+        Coordinate(lat: 39.931, lon: -105.030),
+        Coordinate(lat: 39.931, lon: -105.031),
     ]),
     Feature(id: 2, type: .fairway, polygon: fairwayPolygon),
     Feature(id: 3, type: .green, polygon: greenPolygon),
     Feature(id: 4, type: .bunker, polygon: bunkerPolygon),
     Feature(id: 5, type: .fairway, polygon: [
-        Coordinate(latitude: 39.950, longitude: -105.032),
-        Coordinate(latitude: 39.950, longitude: -105.028),
-        Coordinate(latitude: 39.955, longitude: -105.028),
-        Coordinate(latitude: 39.955, longitude: -105.032),
+        Coordinate(lat: 39.950, lon: -105.032),
+        Coordinate(lat: 39.950, lon: -105.028),
+        Coordinate(lat: 39.955, lon: -105.028),
+        Coordinate(lat: 39.955, lon: -105.032),
     ]),
 ]
 
@@ -47,9 +47,9 @@ private let hole1 = Hole(
     par: 4,
     features: [1, 2, 3, 4],
     centerline: [
-        Coordinate(latitude: 39.930, longitude: -105.030),
-        Coordinate(latitude: 39.937, longitude: -105.030),
-        Coordinate(latitude: 39.941, longitude: -105.029),
+        Coordinate(lat: 39.930, lon: -105.030),
+        Coordinate(lat: 39.937, lon: -105.030),
+        Coordinate(lat: 39.941, lon: -105.029),
     ]
 )
 
@@ -63,7 +63,7 @@ private func makeCourse() -> Course {
             city: "Denver",
             state: "CO",
             country: "US",
-            coordinate: Coordinate(latitude: 39.935, longitude: -105.030)
+            coordinate: Coordinate(lat: 39.935, lon: -105.030)
         ),
         features: features,
         subCourses: [
@@ -161,7 +161,7 @@ final class HoleHelperTests: XCTestCase {
 
     func testVectorForFeatureWithInsufficientCenterline() {
         let hole = Hole(number: 1, par: 4, features: [3], centerline: [
-            Coordinate(latitude: 39.930, longitude: -105.030)
+            Coordinate(lat: 39.930, lon: -105.030)
         ])
         XCTAssertNil(hole.vector(for: 3, from: features))
     }
@@ -178,24 +178,24 @@ final class HoleHelperTests: XCTestCase {
 
     func testOnFairway() {
         // Point inside the fairway polygon
-        let inside = Coordinate(latitude: 39.937, longitude: -105.030)
+        let inside = Coordinate(lat: 39.937, lon: -105.030)
         XCTAssertTrue(hole1.onFairway(inside, from: features))
     }
 
     func testOnFairwayOutside() {
         // Point well outside
-        let outside = Coordinate(latitude: 39.900, longitude: -105.000)
+        let outside = Coordinate(lat: 39.900, lon: -105.000)
         XCTAssertFalse(hole1.onFairway(outside, from: features))
     }
 
     func testOnGreen() {
         // Point inside the green polygon
-        let inside = Coordinate(latitude: 39.9405, longitude: -105.0295)
+        let inside = Coordinate(lat: 39.9405, lon: -105.0295)
         XCTAssertTrue(hole1.onGreen(inside, from: features))
     }
 
     func testOnGreenOutside() {
-        let outside = Coordinate(latitude: 39.900, longitude: -105.000)
+        let outside = Coordinate(lat: 39.900, lon: -105.000)
         XCTAssertFalse(hole1.onGreen(outside, from: features))
     }
 }
@@ -206,16 +206,8 @@ final class FeatureHelperTests: XCTestCase {
     func testCenter() {
         let green = features[2] // id: 3, green
         let c = green.center
-        XCTAssertEqual(c.latitude, 39.9405, accuracy: 0.001)
-        XCTAssertEqual(c.longitude, -105.0295, accuracy: 0.001)
-    }
-
-    func testMiddleEqualsCenter() {
-        let green = features[2]
-        let c = green.center
-        let m = green.middle()
-        XCTAssertEqual(c.latitude, m.latitude, accuracy: 1e-10)
-        XCTAssertEqual(c.longitude, m.longitude, accuracy: 1e-10)
+        XCTAssertEqual(c.lat, 39.9405, accuracy: 0.001)
+        XCTAssertEqual(c.lon, -105.0295, accuracy: 0.001)
     }
 
     func testFrontAndBack() {
@@ -226,9 +218,9 @@ final class FeatureHelperTests: XCTestCase {
         let back = green.back(vector: northVector)
 
         // Front should be the southern vertices (lower latitude)
-        XCTAssertEqual(front.latitude, 39.940, accuracy: 1e-6)
+        XCTAssertEqual(front.lat, 39.940, accuracy: 1e-6)
         // Back should be the northern vertices (higher latitude)
-        XCTAssertEqual(back.latitude, 39.941, accuracy: 1e-6)
+        XCTAssertEqual(back.lat, 39.941, accuracy: 1e-6)
     }
 
     func testFrontAndBackWithEastVector() {
@@ -239,16 +231,16 @@ final class FeatureHelperTests: XCTestCase {
         let back = green.back(vector: eastVector)
 
         // Front should be the western edge (more negative longitude)
-        XCTAssertEqual(front.longitude, -105.030, accuracy: 1e-6)
+        XCTAssertEqual(front.lon, -105.030, accuracy: 1e-6)
         // Back should be the eastern edge (less negative longitude)
-        XCTAssertEqual(back.longitude, -105.029, accuracy: 1e-6)
+        XCTAssertEqual(back.lon, -105.029, accuracy: 1e-6)
     }
 
     func testFrontAndBackEmptyPolygon() {
         let empty = Feature(id: 99, type: .green, polygon: [])
         let v = Vector2D(dx: 1, dy: 0)
-        XCTAssertEqual(empty.front(vector: v).latitude, 0)
-        XCTAssertEqual(empty.back(vector: v).latitude, 0)
+        XCTAssertEqual(empty.front(vector: v).lat, 0)
+        XCTAssertEqual(empty.back(vector: v).lat, 0)
     }
 }
 
@@ -278,40 +270,40 @@ final class Vector2DTests: XCTestCase {
 
 final class SegmentDistanceTests: XCTestCase {
     func testPointOnSegment() {
-        let start = Coordinate(latitude: 0, longitude: 0)
-        let end = Coordinate(latitude: 10, longitude: 0)
-        let point = Coordinate(latitude: 5, longitude: 0)
+        let start = Coordinate(lat: 0, lon: 0)
+        let end = Coordinate(lat: 10, lon: 0)
+        let point = Coordinate(lat: 5, lon: 0)
         let distSq = PolygonGeometry.squaredDistanceToSegment(point, segStart: start, segEnd: end)
         XCTAssertEqual(distSq, 0, accuracy: 1e-10)
     }
 
     func testPointPerpendicularToSegment() {
-        let start = Coordinate(latitude: 0, longitude: 0)
-        let end = Coordinate(latitude: 10, longitude: 0)
-        let point = Coordinate(latitude: 5, longitude: 3)
+        let start = Coordinate(lat: 0, lon: 0)
+        let end = Coordinate(lat: 10, lon: 0)
+        let point = Coordinate(lat: 5, lon: 3)
         let distSq = PolygonGeometry.squaredDistanceToSegment(point, segStart: start, segEnd: end)
         XCTAssertEqual(distSq, 9, accuracy: 1e-10)
     }
 
     func testPointBeyondSegmentEnd() {
-        let start = Coordinate(latitude: 0, longitude: 0)
-        let end = Coordinate(latitude: 10, longitude: 0)
-        let point = Coordinate(latitude: 15, longitude: 0)
+        let start = Coordinate(lat: 0, lon: 0)
+        let end = Coordinate(lat: 10, lon: 0)
+        let point = Coordinate(lat: 15, lon: 0)
         let distSq = PolygonGeometry.squaredDistanceToSegment(point, segStart: start, segEnd: end)
         XCTAssertEqual(distSq, 25, accuracy: 1e-10)
     }
 
     func testPointBeforeSegmentStart() {
-        let start = Coordinate(latitude: 0, longitude: 0)
-        let end = Coordinate(latitude: 10, longitude: 0)
-        let point = Coordinate(latitude: -3, longitude: 4)
+        let start = Coordinate(lat: 0, lon: 0)
+        let end = Coordinate(lat: 10, lon: 0)
+        let point = Coordinate(lat: -3, lon: 4)
         let distSq = PolygonGeometry.squaredDistanceToSegment(point, segStart: start, segEnd: end)
         XCTAssertEqual(distSq, 25, accuracy: 1e-10)
     }
 
     func testDegenerateSegment() {
-        let point = Coordinate(latitude: 0, longitude: 0)
-        let seg = Coordinate(latitude: 3, longitude: 4)
+        let point = Coordinate(lat: 0, lon: 0)
+        let seg = Coordinate(lat: 3, lon: 4)
         let distSq = PolygonGeometry.squaredDistanceToSegment(point, segStart: seg, segEnd: seg)
         XCTAssertEqual(distSq, 25, accuracy: 1e-10)
     }
