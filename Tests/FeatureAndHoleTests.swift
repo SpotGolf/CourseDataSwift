@@ -22,7 +22,7 @@ final class FeatureTests: XCTestCase {
     }
 
     func testAllFeatureTypes() throws {
-        let types: [FeatureType] = [.fairway, .green, .tee, .bunker, .water, .rough]
+        let types: [FeatureType] = [.fairway, .green, .tee, .bunker, .water]
         for type in types {
             let feature = Feature(
                 id: 1,

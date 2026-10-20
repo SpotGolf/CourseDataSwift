@@ -6,7 +6,6 @@ public enum FeatureType: String, Codable, CaseIterable, Hashable, Sendable {
     case tee
     case bunker
     case water
-    case rough
 }
 
 public struct Feature: Identifiable, Codable, Hashable, Sendable {
