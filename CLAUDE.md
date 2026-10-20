@@ -13,9 +13,9 @@ swift build --disable-sandbox
 swift test --disable-sandbox
 ```
 
-The project targets macOS 14+ and iOS 17+ and uses CoreLocation.
+The project targets macOS 27+, iOS 27+, and watchOS 27+ and uses CoreLocation.
 
-The package uses Swift tools version 6.0 and builds in Swift 6 language mode (strict concurrency). Every public value type is `Sendable`, because SpotGolf stores them inside its own `Sendable` types and passes them between actors. Keep new public types `Sendable`.
+The package uses Swift tools version 6.4 and builds in Swift 6 language mode (strict concurrency). Every public value type is `Sendable`, because SpotGolf stores them inside its own `Sendable` types and passes them between actors. Keep new public types `Sendable`.
 
 ## SwiftData
 

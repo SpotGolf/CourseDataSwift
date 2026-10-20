@@ -1,13 +1,13 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.4
 
 import PackageDescription
 
 let package = Package(
     name: "CourseDataSwift",
     platforms: [
-        .macOS(.v14),
-        .iOS(.v17),
-        .watchOS(.v10)
+        .macOS(.v27),
+        .iOS(.v27),
+        .watchOS(.v27)
     ],
     products: [
         .library(name: "CourseDataSwift", targets: ["CourseDataSwift"])
