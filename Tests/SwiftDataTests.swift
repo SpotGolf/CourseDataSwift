@@ -50,7 +50,7 @@ final class SwiftDataTests: XCTestCase {
 
     private var hole: Hole {
         Hole(number: 1, par: 4, yardages: ["Blue": 401], features: [1],
-             comboTees: ["Blue/White": "Blue"], centerline: path)
+             comboTees: ["Blue/White": "Blue"], centerline: 2)
     }
 
     private var storeURL: URL!
@@ -99,7 +99,11 @@ final class SwiftDataTests: XCTestCase {
     }
 
     func testFeatures() throws {
-        let features = [Feature(id: 1, type: .green, polygon: path), Feature(id: 2, type: .bunker, polygon: [])]
+        let features = [
+            Feature(id: 1, type: .green, polygon: path, osmID: "w123456789"),
+            Feature(id: 2, type: .bunker, polygon: []),
+            Feature(id: 3, type: .centerline, polygon: path, osmID: "w987654321")
+        ]
         XCTAssertEqual(try saveAndFetch(FeaturesRecord(features))?.features, features)
     }
 
@@ -111,7 +115,10 @@ final class SwiftDataTests: XCTestCase {
             location: location,
             tees: [TeeDefinition(name: "Blue", color: "#0000FF")],
             comboTees: [ComboTeeDefinition(name: "Blue/White", tees: ["Blue", "White"])],
-            features: [Feature(id: 1, type: .green, polygon: path)],
+            features: [
+                Feature(id: 1, type: .green, polygon: path, osmID: "w123456789"),
+                Feature(id: 2, type: .centerline, polygon: path, osmID: "w987654321")
+            ],
             subCourses: [
                 SubCourse(
                     name: "Front",

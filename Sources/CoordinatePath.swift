@@ -1,6 +1,6 @@
 import Foundation
 
-/// An ordered list of coordinates, such as a feature's polygon or a hole's centerline, stored
+/// An ordered list of coordinates, such as a feature's polygon or a centerline, stored
 /// compactly.
 ///
 /// Each point is kept as three whole numbers, each in units of about 1 foot: latitude and

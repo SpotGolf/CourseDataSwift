@@ -22,8 +22,7 @@ final class FeatureTests: XCTestCase {
     }
 
     func testAllFeatureTypes() throws {
-        let types: [FeatureType] = [.fairway, .green, .tee, .bunker, .water]
-        for type in types {
+        for type in FeatureType.allCases {
             let feature = Feature(
                 id: 1,
                 type: type,
@@ -52,6 +51,29 @@ final class FeatureTests: XCTestCase {
             #"{"id":42,"polygon":{"values":[14235000,-38325000,null,36500,-36500,null]},"type":"bunker"}"#
         )
     }
+
+    func testFeatureJSONFormatWithOSMID() throws {
+        let feature = Feature(
+            id: 42,
+            type: .centerline,
+            polygon: [Coordinate(lat: 39.0, lon: -105.0)],
+            osmID: "w123456789"
+        )
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        let data = try encoder.encode(feature)
+        XCTAssertEqual(
+            String(decoding: data, as: UTF8.self),
+            #"{"id":42,"osmID":"w123456789","polygon":{"values":[14235000,-38325000,null]},"type":"centerline"}"#
+        )
+        XCTAssertEqual(try JSONDecoder().decode(Feature.self, from: data), feature)
+    }
+
+    func testFeatureWithoutOSMIDDecodes() throws {
+        let json = #"{"id":1,"polygon":{"values":[]},"type":"green"}"#
+        let feature = try JSONDecoder().decode(Feature.self, from: Data(json.utf8))
+        XCTAssertNil(feature.osmID)
+    }
 }
 
 final class HoleTests: XCTestCase {
@@ -62,10 +84,7 @@ final class HoleTests: XCTestCase {
             maleHandicap: 13,
             yardages: ["Black": 401, "Gold": 378],
             features: [1, 2, 3],
-            centerline: [
-                Coordinate(lat: 39.788, lon: -74.958),
-                Coordinate(lat: 39.786, lon: -74.956)
-            ]
+            centerline: 4
         )
         let data = try JSONEncoder().encode(hole)
         let decoded = try JSONDecoder().decode(Hole.self, from: data)
@@ -73,7 +92,13 @@ final class HoleTests: XCTestCase {
         XCTAssertEqual(decoded.number, 1)
         XCTAssertEqual(decoded.par, 4)
         XCTAssertEqual(decoded.features, [1, 2, 3])
-        XCTAssertEqual(decoded.centerline.count, 2)
+        XCTAssertEqual(decoded.centerline, 4)
+    }
+
+    func testCodableWithoutCenterline() throws {
+        let data = try JSONEncoder().encode(Hole(number: 1, par: 4))
+        XCTAssertFalse(String(decoding: data, as: UTF8.self).contains("centerline"))
+        XCTAssertNil(try JSONDecoder().decode(Hole.self, from: data).centerline)
     }
 
     func testRenumbered() {
@@ -85,7 +110,7 @@ final class HoleTests: XCTestCase {
             yardages: ["Blue": 545],
             features: [10, 11],
             comboTees: ["Blue/White": "Blue"],
-            centerline: [Coordinate(lat: 39.0, lon: -105.0)]
+            centerline: 12
         )
         let renumbered = hole.renumbered(to: 1)
         XCTAssertEqual(renumbered.number, 1)
@@ -95,7 +120,7 @@ final class HoleTests: XCTestCase {
         XCTAssertEqual(renumbered.yardages["Blue"], 545)
         XCTAssertEqual(renumbered.features, [10, 11])
         XCTAssertEqual(renumbered.comboTees, ["Blue/White": "Blue"])
-        XCTAssertEqual(renumbered.centerline.count, 1)
+        XCTAssertEqual(renumbered.centerline, 12)
         XCTAssertEqual(renumbered.id, 1)
     }
 
@@ -103,7 +128,7 @@ final class HoleTests: XCTestCase {
         let hole = Hole(number: 5, par: 3, maleHandicap: 7)
         XCTAssertTrue(hole.yardages.isEmpty)
         XCTAssertTrue(hole.features.isEmpty)
-        XCTAssertTrue(hole.centerline.isEmpty)
+        XCTAssertNil(hole.centerline)
     }
 
     func testSplitIntoSubCourses18Holes() {

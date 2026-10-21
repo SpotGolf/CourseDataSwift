@@ -40,17 +40,21 @@ private let features = [
         Coordinate(lat: 39.955, lon: -105.028),
         Coordinate(lat: 39.955, lon: -105.032),
     ]),
+    Feature(id: 9, type: .centerline, polygon: [
+        Coordinate(lat: 39.930, lon: -105.030),
+        Coordinate(lat: 39.937, lon: -105.030),
+        Coordinate(lat: 39.941, lon: -105.029),
+    ]),
+    Feature(id: 10, type: .centerline, polygon: [
+        Coordinate(lat: 39.930, lon: -105.030)
+    ]),
 ]
 
 private let hole1 = Hole(
     number: 1,
     par: 4,
     features: [1, 2, 3, 4],
-    centerline: [
-        Coordinate(lat: 39.930, lon: -105.030),
-        Coordinate(lat: 39.937, lon: -105.030),
-        Coordinate(lat: 39.941, lon: -105.029),
-    ]
+    centerline: 9
 )
 
 private let hole2 = Hole(number: 2, par: 3, features: [5])
@@ -183,10 +187,30 @@ final class HoleHelperTests: XCTestCase {
     }
 
     func testVectorForFeatureWithInsufficientCenterline() {
-        let hole = Hole(number: 1, par: 4, features: [3], centerline: [
-            Coordinate(lat: 39.930, lon: -105.030)
-        ])
+        let hole = Hole(number: 1, par: 4, features: [3], centerline: 10)
         XCTAssertNil(hole.vector(for: 3, from: features))
+    }
+
+    func testVectorForFeatureWithoutCenterline() {
+        let hole = Hole(number: 1, par: 4, features: [3])
+        XCTAssertNil(hole.vector(for: 3, from: features))
+    }
+
+    func testVectorForFeatureWithMissingCenterlineFeature() {
+        let hole = Hole(number: 1, par: 4, features: [3], centerline: 999)
+        XCTAssertNil(hole.vector(for: 3, from: features))
+    }
+
+    func testCenterlineFromFeatures() {
+        let centerline = hole1.centerline(from: features)
+        XCTAssertEqual(centerline?.id, 9)
+        XCTAssertEqual(centerline?.type, .centerline)
+        XCTAssertEqual(centerline?.polygon.count, 3)
+    }
+
+    func testCenterlineFromFeaturesWhenNoCenterline() {
+        XCTAssertNil(hole2.centerline(from: features))
+        XCTAssertNil(Hole(number: 1, par: 4, centerline: 999).centerline(from: features))
     }
 
     func testVectorForMissingFeature() {

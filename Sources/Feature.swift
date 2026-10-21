@@ -6,17 +6,27 @@ public enum FeatureType: String, Codable, CaseIterable, Hashable, Sendable {
     case tee
     case bunker
     case water
+    /// A hole's line of play from tee to green. Its ``Feature/polygon`` is an open line, not a
+    /// closed shape.
+    case centerline
 }
 
 public struct Feature: Identifiable, Codable, Hashable, Sendable {
     public let id: Int
     public let type: FeatureType
+    /// The feature's points. A closed shape for most types, and an open line for
+    /// ``FeatureType/centerline``.
     public var polygon: CoordinatePath
+    /// The OpenStreetMap element this feature came from, in short form: `n`, `w`, or `r` for a
+    /// node, way, or relation, followed by its ID, such as `w123456789`. `nil` when the feature
+    /// is not in OpenStreetMap. Left out of the JSON when `nil`.
+    public var osmID: String?
 
-    public init(id: Int, type: FeatureType, polygon: CoordinatePath) {
+    public init(id: Int, type: FeatureType, polygon: CoordinatePath, osmID: String? = nil) {
         self.id = id
         self.type = type
         self.polygon = polygon
+        self.osmID = osmID
     }
 
     /// The centroid of this feature's polygon.

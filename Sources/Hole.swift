@@ -9,7 +9,9 @@ public struct Hole: Identifiable, Codable, Hashable, Sendable {
     public var yardages: [String: Int]
     public var features: [Int]
     public var comboTees: [String: String]
-    public var centerline: CoordinatePath
+    /// The ID of this hole's ``FeatureType/centerline`` feature in ``Course/features``, or
+    /// `nil` if the hole has no centerline. Use ``centerline(from:)`` to get the feature.
+    public var centerline: Int?
 
     public init(
         number: Int,
@@ -19,7 +21,7 @@ public struct Hole: Identifiable, Codable, Hashable, Sendable {
         yardages: [String: Int] = [:],
         features: [Int] = [],
         comboTees: [String: String] = [:],
-        centerline: CoordinatePath = []
+        centerline: Int? = nil
     ) {
         self.number = number
         self.par = par
@@ -70,6 +72,16 @@ public struct Hole: Identifiable, Codable, Hashable, Sendable {
         return features.filter { ids.contains($0.id) && $0.type == .tee }
     }
 
+    /// Returns the centerline feature for this hole.
+    ///
+    /// - Parameter features: The course's full ``Course/features`` array.
+    /// - Returns: The ``Feature`` whose ID is ``centerline``, or `nil` if the hole has no
+    ///   centerline or the ID is not in `features`.
+    public func centerline(from features: [Feature]) -> Feature? {
+        guard let centerline else { return nil }
+        return features.first { $0.id == centerline }
+    }
+
     /// Determines the direction-of-play vector at a feature's location along this hole's centerline.
     ///
     /// Finds the centerline segment closest to the feature's centroid and returns that
@@ -79,11 +91,14 @@ public struct Hole: Identifiable, Codable, Hashable, Sendable {
     /// - Parameters:
     ///   - featureID: The ID of the feature to compute the vector for. The feature does not
     ///     need to belong to this hole.
-    ///   - features: The course's full ``Course/features`` array, used to resolve the feature ID.
+    ///   - features: The course's full ``Course/features`` array, used to resolve the feature ID
+    ///     and this hole's centerline.
     /// - Returns: A unit ``Vector2D`` representing the direction of play at the feature's location,
-    ///   or `nil` if the feature can't be found or the centerline has fewer than 2 points.
+    ///   or `nil` if the feature or centerline can't be found or the centerline has fewer than
+    ///   2 points.
     public func vector(for featureID: Int, from features: [Feature]) -> Vector2D? {
-        guard centerline.count >= 2,
+        guard let centerline = centerline(from: features)?.polygon,
+              centerline.count >= 2,
               let feature = features.first(where: { $0.id == featureID }),
               !feature.polygon.isEmpty else {
             return nil
