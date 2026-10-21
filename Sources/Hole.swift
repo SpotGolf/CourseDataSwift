@@ -8,7 +8,6 @@ public struct Hole: Identifiable, Codable, Hashable, Sendable {
     public var femaleHandicap: Int
     public var yardages: [String: Int]
     public var features: [Int]
-    public var tees: [String: Int]
     public var comboTees: [String: String]
     public var centerline: CoordinatePath
 
@@ -19,7 +18,6 @@ public struct Hole: Identifiable, Codable, Hashable, Sendable {
         femaleHandicap: Int = 0,
         yardages: [String: Int] = [:],
         features: [Int] = [],
-        tees: [String: Int] = [:],
         comboTees: [String: String] = [:],
         centerline: CoordinatePath = []
     ) {
@@ -29,7 +27,6 @@ public struct Hole: Identifiable, Codable, Hashable, Sendable {
         self.femaleHandicap = femaleHandicap
         self.yardages = yardages
         self.features = features
-        self.tees = tees
         self.comboTees = comboTees
         self.centerline = centerline
     }
@@ -42,7 +39,6 @@ public struct Hole: Identifiable, Codable, Hashable, Sendable {
             femaleHandicap: femaleHandicap,
             yardages: yardages,
             features: features,
-            tees: tees,
             comboTees: comboTees,
             centerline: centerline
         )
@@ -58,6 +54,20 @@ public struct Hole: Identifiable, Codable, Hashable, Sendable {
     public func green(from features: [Feature]) -> Feature? {
         let ids = Set(self.features)
         return features.first { ids.contains($0.id) && $0.type == .green }
+    }
+
+    /// Returns the tee box features for this hole.
+    ///
+    /// Filters the provided features to those belonging to this hole with type
+    /// ``FeatureType/tee``. Tee boxes are not tied to named tees, so a hole can have
+    /// more tee boxes than the course has ``TeeDefinition``s.
+    ///
+    /// - Parameter features: The course's full ``Course/features`` array.
+    /// - Returns: The tee box ``Feature``s, in the same order they appear in `features`.
+    ///   Empty if this hole has no tee boxes.
+    public func teeBoxes(from features: [Feature]) -> [Feature] {
+        let ids = Set(self.features)
+        return features.filter { ids.contains($0.id) && $0.type == .tee }
     }
 
     /// Determines the direction-of-play vector at a feature's location along this hole's centerline.

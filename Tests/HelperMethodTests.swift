@@ -151,6 +151,29 @@ final class HoleHelperTests: XCTestCase {
         XCTAssertNil(green)
     }
 
+    func testTeeBoxesFromFeatures() {
+        let teePolygon: CoordinatePath = [
+            Coordinate(lat: 39.932, lon: -105.031),
+            Coordinate(lat: 39.932, lon: -105.030),
+            Coordinate(lat: 39.933, lon: -105.030),
+        ]
+        let allFeatures = features + [
+            Feature(id: 6, type: .tee, polygon: teePolygon),
+            Feature(id: 7, type: .tee, polygon: teePolygon),
+            Feature(id: 8, type: .tee, polygon: teePolygon),
+        ]
+        // Feature 7 is a tee box on another hole.
+        let hole = Hole(number: 1, par: 4, features: [1, 2, 3, 6, 8])
+        let teeBoxes = hole.teeBoxes(from: allFeatures)
+        XCTAssertEqual(teeBoxes.map(\.id), [1, 6, 8])
+        XCTAssertTrue(teeBoxes.allSatisfy { $0.type == .tee })
+    }
+
+    func testTeeBoxesFromFeaturesWhenNoTeeBoxes() {
+        let hole = Hole(number: 1, par: 4, features: [2, 3])
+        XCTAssertTrue(hole.teeBoxes(from: features).isEmpty)
+    }
+
     func testVectorForFeature() {
         let v = hole1.vector(for: 3, from: features)
         XCTAssertNotNil(v)

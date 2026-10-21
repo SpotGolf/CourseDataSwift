@@ -49,7 +49,7 @@ final class SwiftDataTests: XCTestCase {
     )
 
     private var hole: Hole {
-        Hole(number: 1, par: 4, yardages: ["Blue": 401], features: [1], tees: ["Blue": 1],
+        Hole(number: 1, par: 4, yardages: ["Blue": 401], features: [1],
              comboTees: ["Blue/White": "Blue"], centerline: path)
     }
 
