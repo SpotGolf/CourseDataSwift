@@ -21,12 +21,22 @@ public struct Feature: Identifiable, Codable, Hashable, Sendable {
     /// node, way, or relation, followed by its ID, such as `w123456789`. `nil` when the feature
     /// is not in OpenStreetMap. Left out of the JSON when `nil`.
     public var osmID: String?
+    /// The height of the ground across the feature. Set only on ``FeatureType/green`` features,
+    /// and `nil` when the green has no elevation data. Left out of the JSON when `nil`.
+    public var surface: ElevationSurface?
 
-    public init(id: Int, type: FeatureType, polygon: CoordinatePath, osmID: String? = nil) {
+    public init(
+        id: Int,
+        type: FeatureType,
+        polygon: CoordinatePath,
+        osmID: String? = nil,
+        surface: ElevationSurface? = nil
+    ) {
         self.id = id
         self.type = type
         self.polygon = polygon
         self.osmID = osmID
+        self.surface = surface
     }
 
     /// The centroid of this feature's polygon.

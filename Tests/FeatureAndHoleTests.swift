@@ -74,6 +74,42 @@ final class FeatureTests: XCTestCase {
         let feature = try JSONDecoder().decode(Feature.self, from: Data(json.utf8))
         XCTAssertNil(feature.osmID)
     }
+
+    func testFeatureWithSurfaceRoundTrip() throws {
+        let surface = ElevationSurface(
+            origin: Coordinate(lat: 39.0, lon: -105.0),
+            columns: 2,
+            elevations: [nil, 1600.12, 1600.15, 1600.09]
+        )
+        let feature = Feature(
+            id: 7,
+            type: .green,
+            polygon: [Coordinate(lat: 39.0, lon: -105.0)],
+            surface: surface
+        )
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        let data = try encoder.encode(feature)
+        XCTAssertEqual(
+            String(decoding: data, as: UTF8.self),
+            #"{"id":7,"polygon":{"values":[14235000,-38325000,null]},"surface":{"columns":2,"elevations":[null,160012,3,-6],"origin":{"lat":39,"lon":-105},"spacing":1},"type":"green"}"#
+        )
+        let decoded = try JSONDecoder().decode(Feature.self, from: data)
+        XCTAssertEqual(decoded, feature)
+        XCTAssertEqual(decoded.surface, surface)
+    }
+
+    func testFeatureWithoutSurfaceDecodes() throws {
+        let json = #"{"id":1,"osmID":"w1","polygon":{"values":[]},"type":"green"}"#
+        let feature = try JSONDecoder().decode(Feature.self, from: Data(json.utf8))
+        XCTAssertNil(feature.surface)
+    }
+
+    func testFeatureWithoutSurfaceLeavesItOutOfJSON() throws {
+        let feature = Feature(id: 1, type: .green, polygon: [])
+        let data = try JSONEncoder().encode(feature)
+        XCTAssertFalse(String(decoding: data, as: UTF8.self).contains("surface"))
+    }
 }
 
 final class HoleTests: XCTestCase {

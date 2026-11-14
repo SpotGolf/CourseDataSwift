@@ -17,6 +17,11 @@ import CourseDataSwift
     init(_ path: CoordinatePath) { self.path = path }
 }
 
+@Model final class SurfaceRecord {
+    var surface: ElevationSurface
+    init(_ surface: ElevationSurface) { self.surface = surface }
+}
+
 @Model final class HoleRecord {
     var hole: Hole
     init(_ hole: Hole) { self.hole = hole }
@@ -46,6 +51,12 @@ final class SwiftDataTests: XCTestCase {
         state: "CO",
         country: "US",
         coordinate: Coordinate(lat: 39.9397, lon: -105.0267, ele: 1600.5)
+    )
+
+    private let surface = ElevationSurface(
+        origin: Coordinate(lat: 39.9401, lon: -105.0273),
+        columns: 3,
+        elevations: [nil, 1600.12, 1600.15, 1600.09, 1600.11, nil]
     )
 
     private var hole: Hole {
@@ -94,13 +105,17 @@ final class SwiftDataTests: XCTestCase {
         XCTAssertEqual(try saveAndFetch(PathRecord(path))?.path, path)
     }
 
+    func testElevationSurface() throws {
+        XCTAssertEqual(try saveAndFetch(SurfaceRecord(surface))?.surface, surface)
+    }
+
     func testHole() throws {
         XCTAssertEqual(try saveAndFetch(HoleRecord(hole))?.hole, hole)
     }
 
     func testFeatures() throws {
         let features = [
-            Feature(id: 1, type: .green, polygon: path, osmID: "w123456789"),
+            Feature(id: 1, type: .green, polygon: path, osmID: "w123456789", surface: surface),
             Feature(id: 2, type: .bunker, polygon: []),
             Feature(id: 3, type: .centerline, polygon: path, osmID: "w987654321")
         ]
@@ -116,7 +131,7 @@ final class SwiftDataTests: XCTestCase {
             tees: [TeeDefinition(name: "Blue", color: "#0000FF")],
             comboTees: [ComboTeeDefinition(name: "Blue/White", tees: ["Blue", "White"])],
             features: [
-                Feature(id: 1, type: .green, polygon: path, osmID: "w123456789"),
+                Feature(id: 1, type: .green, polygon: path, osmID: "w123456789", surface: surface),
                 Feature(id: 2, type: .centerline, polygon: path, osmID: "w987654321")
             ],
             subCourses: [
