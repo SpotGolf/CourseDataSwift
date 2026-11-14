@@ -3,8 +3,8 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/Sources" />
-      <sourceFolder url="file://$MODULE_DIR$/Tests" />
+      <sourceFolder url="file://$MODULE_DIR$/Sources" type="swift-source" />
+      <sourceFolder url="file://$MODULE_DIR$/Tests" type="swift-source" />
       <excludePattern pattern=".build" />
       <excludePattern pattern=".index-build" />
     </content>
