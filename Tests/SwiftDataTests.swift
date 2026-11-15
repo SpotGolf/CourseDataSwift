@@ -127,6 +127,7 @@ final class SwiftDataTests: XCTestCase {
             name: "The Broadlands Golf Course",
             clubName: "Broadlands",
             golfCourseAPIIds: ["19198"],
+            osmID: "w555555555",
             location: location,
             tees: [TeeDefinition(name: "Blue", color: "#0000FF")],
             comboTees: [ComboTeeDefinition(name: "Blue/White", tees: ["Blue", "White"])],

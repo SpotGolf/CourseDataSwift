@@ -110,6 +110,10 @@ public struct Course: Identifiable, Codable, Hashable, Sendable {
     public var name: String
     public var clubName: String
     public var golfCourseAPIIds: [String]
+    /// The OpenStreetMap `leisure=golf_course` element for this course, in short form: `n`, `w`,
+    /// or `r` for a node, way, or relation, followed by its ID, such as `w123456789`. `nil` when
+    /// the course is not in OpenStreetMap. Left out of the JSON when `nil`.
+    public var osmID: String?
     public var location: CourseLocation
     public var tees: [TeeDefinition]
     public var comboTees: [ComboTeeDefinition]
@@ -125,6 +129,7 @@ public struct Course: Identifiable, Codable, Hashable, Sendable {
         name: String,
         clubName: String = "",
         golfCourseAPIIds: [String] = [],
+        osmID: String? = nil,
         location: CourseLocation,
         tees: [TeeDefinition] = [],
         comboTees: [ComboTeeDefinition] = [],
@@ -135,6 +140,7 @@ public struct Course: Identifiable, Codable, Hashable, Sendable {
         self.name = name
         self.clubName = clubName
         self.golfCourseAPIIds = golfCourseAPIIds
+        self.osmID = osmID
         self.location = location
         self.tees = tees
         self.comboTees = comboTees

@@ -71,6 +71,33 @@ final class CourseTests: XCTestCase {
         XCTAssertEqual(decoded.golfCourseAPIIds, ["19198", "abc-123"])
     }
 
+    func testOSMIDRoundTrip() throws {
+        let course = Course(
+            name: "Test Course",
+            osmID: "w123456789",
+            location: CourseLocation(address: "", city: "", state: "", country: "", coordinate: Coordinate(lat: 0, lon: 0))
+        )
+        let data = try JSONEncoder().encode(course)
+        let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+        XCTAssertEqual(json["osmID"] as? String, "w123456789")
+
+        let decoded = try JSONDecoder().decode(Course.self, from: data)
+        XCTAssertEqual(decoded.osmID, "w123456789")
+    }
+
+    func testCourseWithoutOSMID() throws {
+        let course = Course(
+            name: "Test Course",
+            location: CourseLocation(address: "", city: "", state: "", country: "", coordinate: Coordinate(lat: 0, lon: 0))
+        )
+        let data = try JSONEncoder().encode(course)
+        let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+        XCTAssertNil(json["osmID"])
+
+        let decoded = try JSONDecoder().decode(Course.self, from: data)
+        XCTAssertNil(decoded.osmID)
+    }
+
     func testComboTeesRoundTrip() throws {
         let course = Course(
             name: "Test Course",
