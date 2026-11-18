@@ -32,6 +32,11 @@ import CourseDataSwift
     init(_ features: [Feature]) { self.features = features }
 }
 
+@Model final class GenderRecord {
+    var gender: Gender
+    init(_ gender: Gender) { self.gender = gender }
+}
+
 @Model final class CourseRecord {
     var course: Course
     init(_ course: Course) { self.course = course }
@@ -120,6 +125,10 @@ final class SwiftDataTests: XCTestCase {
             Feature(id: 3, type: .centerline, polygon: path, osmID: "w987654321")
         ]
         XCTAssertEqual(try saveAndFetch(FeaturesRecord(features))?.features, features)
+    }
+
+    func testGender() throws {
+        XCTAssertEqual(try saveAndFetch(GenderRecord(.female))?.gender, .female)
     }
 
     func testCourse() throws {
